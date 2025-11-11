@@ -1,6 +1,6 @@
-# 85_docs_fuer_dav
+#dav_ag_ki
 
-Dieses Repository bündelt drei voneinander unabhängige Beispiele und Tools:
+Dieses Repository bündelt drei voneinander unabhängige Beispiele und Tools, die im Rahmen der Arbeit der Arbeitsgruppe Einsatz von GenAI im Aktuariat der DAV (Deutsche Aktuarvereinigung) erstellt wurden. Fragen zum Repo oder den Inhalten bitte an den REPO-Owner richten.
 
 | Ordner | Kurzbeschreibung | Primäre Technologien |
 | --- | --- | --- |
