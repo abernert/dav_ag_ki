@@ -26,7 +26,7 @@ pip install -r requirements.txt
     - SQLite absoluter Pfad: `export DATABASE_URL=sqlite:////abs/pfad/genapp.db`
 - Weitere Konfigurationen sind aktuell nicht erforderlich. Tabellen werden automatisch erstellt.
 
-Tipp: `cp .env.example .env` und Werte anpassen. Die App lädt `.env` nicht automatisch; für eine Shell-Session kannst du exportieren, z. B. `export $(cat .env | xargs)`.
+Tipp: `cp env.example .env` und Werte anpassen. Die App lädt `.env` nicht automatisch; für eine Shell-Session kannst du exportieren, z. B. `export $(cat .env | xargs)`.
 
 Hinweis: Für lokale Entwicklung genügt die Standard‑SQLite‑Konfiguration.
 

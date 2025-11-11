@@ -1,0 +1,1 @@
+kowabunga_spaghetti.c ist eine bewusst komplizierte Implementierung des Quicksort-Algorithmus in C. Sie dient als Testfall für die Fähigkeiten von LLMs bei der Codedokumentation. Ein Beispiel für eine solche von einem LLM generierte Dokumentation ist in kowabunga.md zu finden.

@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
-# Copyright 2025 Alexander Bernert
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 Alexander Bernert
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """
 VeriPort: Single-file CrewAI-based code converter with reviewer loop.
 
@@ -35,7 +38,9 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Literal, Tuple
+
+from pydantic import BaseModel
 
 # Load environment variables from .env if present
 try:  # pragma: no cover
@@ -52,12 +57,13 @@ __all__ = [
     "ConverterPipeline",
     "resolve_output_path",
     "main",
+    "ReviewVerdict",
 ]
 
 
 # --- LLM and CrewAI helpers -------------------------------------------------
 
-def _build_llm(model: str, temperature: float = 0.2) -> Any:
+def _build_llm(model: str) -> Any:
     """Build an LLM compatible with CrewAI Agents.
 
     Tries CrewAI's native LLM wrapper, falling back to LangChain's ChatOpenAI.
@@ -66,13 +72,13 @@ def _build_llm(model: str, temperature: float = 0.2) -> Any:
     try:
         from crewai import LLM as CrewAILLM  # type: ignore
 
-        return CrewAILLM(model=model, temperature=temperature)
+        return CrewAILLM(model=model)
     except Exception:
         # Maybe older import path
         try:
             from crewai.llm import LLM as CrewAILLM  # type: ignore
 
-            return CrewAILLM(model=model, temperature=temperature)
+            return CrewAILLM(model=model)
         except Exception:
             pass
 
@@ -81,7 +87,7 @@ def _build_llm(model: str, temperature: float = 0.2) -> Any:
         from langchain_openai import ChatOpenAI  # type: ignore
 
         # Uses OPENAI_API_KEY from environment
-        return ChatOpenAI(model=model, temperature=temperature)
+        return ChatOpenAI(model=model)
     except Exception as e:  # pragma: no cover - guidance for missing deps
         raise RuntimeError(
             "Unable to construct an LLM. Please install one of: "
@@ -116,6 +122,68 @@ def _safe_json_extract(s: str) -> Optional[Dict[str, Any]]:
     return None
 
 
+def _extract_verdict_feedback(payload: Dict[str, Any]) -> Tuple[str, str]:
+    """Return verdict/feedback from various CrewAI payload shapes."""
+
+    def _from_dict(d: Dict[str, Any]) -> Tuple[str, str]:
+        verdict_val = str(d.get("verdict", "")).strip().lower()
+        feedback_val = str(d.get("feedback", "")).strip()
+        return verdict_val, feedback_val
+
+    if not isinstance(payload, dict):
+        return "", ""
+
+    candidates: list[Dict[str, Any]] = [payload]
+    json_dict = payload.get("json_dict")
+    if isinstance(json_dict, dict):
+        candidates.append(json_dict)
+    raw_text = payload.get("raw")
+    if isinstance(raw_text, str):
+        raw_json = _safe_json_extract(raw_text)
+        if isinstance(raw_json, dict):
+            candidates.append(raw_json)
+
+    for candidate in candidates:
+        verdict_val, feedback_val = _from_dict(candidate)
+        if verdict_val:
+            return verdict_val, feedback_val
+    return _from_dict(payload)
+
+
+def _normalize_task_output(result: Any) -> str:
+    """Flatten CrewAI outputs (dict/BaseModel) down to a meaningful string."""
+    if result is None:
+        return ""
+
+    if isinstance(result, BaseModel):
+        return _normalize_task_output(result.model_dump())
+
+    if isinstance(result, dict):
+        json_dict = result.get("json_dict")
+        if isinstance(json_dict, dict):
+            return json.dumps(json_dict)
+        raw_text = result.get("raw")
+        if isinstance(raw_text, str):
+            parsed = _safe_json_extract(raw_text)
+            if parsed is not None:
+                return json.dumps(parsed)
+            return raw_text.strip()
+        if len(result) == 1:
+            return _normalize_task_output(next(iter(result.values())))
+        return json.dumps(result)
+
+    if isinstance(result, list):
+        return json.dumps(result)
+
+    if isinstance(result, str):
+        parsed = _safe_json_extract(result)
+        if parsed is not None:
+            return _normalize_task_output(parsed)
+        return result.strip()
+
+    return str(result).strip()
+
+
 def _detect_ext_from_language(lang: str) -> str:
     mapping = {
         "python": "py",
@@ -136,6 +204,11 @@ def _detect_ext_from_language(lang: str) -> str:
         "cobol": "cbl",
     }
     return mapping.get(lang.lower(), "py")
+
+
+class ReviewVerdict(BaseModel):
+    verdict: Literal["approve", "revise"]
+    feedback: str = ""
 
 
 # --- Agents -----------------------------------------------------------------
@@ -213,7 +286,6 @@ class ConverterPipeline:
         model: str = "gpt-5",
         target_language: str = "python",
         target_ext: Optional[str] = None,
-        temperature: float = 0.2,
         verbose: bool = False,
         max_iters: int = 3,
     ) -> None:
@@ -229,11 +301,10 @@ class ConverterPipeline:
         self.model = model
         self.target_language = target_language
         self.target_ext = target_ext or _detect_ext_from_language(target_language)
-        self.temperature = temperature
         self.verbose = verbose
         self.max_iters = max_iters
 
-        self.llm = _build_llm(model=self.model, temperature=self.temperature)
+        self.llm = _build_llm(model=self.model)
 
     def _make_conversion_task(self, agent: Any) -> Any:
         _, _, _, Task = _import_crewai()
@@ -282,15 +353,14 @@ class ConverterPipeline:
                 '{"verdict":"approve"|"revise","feedback":"..."}'
             ),
             agent=agent,
-            output_json=True,
+            output_json=ReviewVerdict,
         )
 
     def _run_single_task(self, agent: Any, task: Any, inputs: Dict[str, Any]) -> str:
         _, Crew, Process, _ = _import_crewai()
         crew = Crew(agents=[agent], tasks=[task], process=Process.sequential, verbose=self.verbose)
         result = crew.kickoff(inputs=inputs)
-        # CrewAI returns the final task output, typically as a string
-        return str(result).strip() if result is not None else ""
+        return _normalize_task_output(result)
 
     def iterate(self, filename: str, original_code: str) -> ConversionResult:
         converter_agent = _make_converter_agent(self.llm, self.target_language, self.verbose)
@@ -328,8 +398,7 @@ class ConverterPipeline:
             )
 
             review_json = _safe_json_extract(review_raw) or {}
-            verdict = str(review_json.get("verdict", "")).lower()
-            feedback = str(review_json.get("feedback", "")).strip()
+            verdict, feedback = _extract_verdict_feedback(review_json)
 
             if verdict == "approve":
                 return ConversionResult(
@@ -359,6 +428,7 @@ def resolve_output_path(input_path: Path, target_ext: str) -> Path:
 
     If the extension equals the original one, append ".converted" before extension.
     """
+
     stem = input_path.stem
     parent = input_path.parent
     orig_ext = input_path.suffix.lstrip(".")
@@ -406,12 +476,6 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
         help="Maximum number of conversion-review iterations (default: 3)",
     )
     p.add_argument(
-        "--temperature",
-        type=float,
-        default=0.2,
-        help="Sampling temperature for the LLM (default: 0.2)",
-    )
-    p.add_argument(
         "--verbose",
         "-v",
         action="store_true",
@@ -443,7 +507,6 @@ def main(argv: list[str] | None = None) -> int:
         model=ns.model,
         target_language=ns.target_lang,
         target_ext=ns.ext,
-        temperature=ns.temperature,
         verbose=ns.verbose,
         max_iters=ns.max_iters,
     )

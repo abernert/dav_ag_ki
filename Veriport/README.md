@@ -1,6 +1,6 @@
 # VeriPort
 
-VeriPort ist ein einzelnes Python-Skript, das mit Hilfe von CrewAI-Agenten Quellcode von einer Sprache in eine andere überführt und jede Konvertierung durch einen automatisierten Review-Lauf gegenprüfen lässt. Das Tool eignet sich für kleine Experimente ebenso wie für wiederholbare Umsetzungen einzelner Dateien ohne komplettes Projekt-Setup.
+VeriPort ist ein einzelnes Python-Skript unter der GPL 3.0 Lizenz, das mit Hilfe von CrewAI-Agenten Quellcode von einer Sprache in eine andere überführt und jede Konvertierung durch einen automatisierten Review-Lauf gegenprüfen lässt. Das Tool eignet sich für kleine Experimente ebenso wie für wiederholbare Umsetzungen einzelner Dateien ohne komplettes Projekt-Setup.
 
 ## Zweck und Grundidee
 1. Eingabedatei wählen (`python veriport.py <datei>`).
@@ -12,12 +12,13 @@ VeriPort ist ein einzelnes Python-Skript, das mit Hilfe von CrewAI-Agenten Quell
 Das Ergebnis ist dadurch reproduzierbarer als ein einmaliger Chat-Export, weil dieselbe Pipeline mehrfach verwendbar ist und klare Erfolgskriterien besitzt.
 
 ## Frameworks & Abhängigkeiten
-- **CrewAI** (`crewai`): Stellt `Agent`, `Task`, `Crew`, `Process` bereit. Beide Agents laufen darin sequenziell.
-- **LangChain OpenAI** (`langchain-openai`): Wird automatisch als Fallback-Library genutzt, falls CrewAI keinen eigenen LLM-Wrapper findet. Erwartet `OPENAI_API_KEY` in der Umgebung oder `.env`.
-- **python-dotenv** (`dotenv`): Optional. Wird beim Start geladen, um API-Keys oder Modelle aus `.env` zu beziehen.
+- **Python 3.12** (siehe Hinweis in `requirements.txt`).
+- **CrewAI** (`crewai==1.4.1`): Stellt `Agent`, `Task`, `Crew`, `Process` bereit. Beide Agents laufen darin sequenziell.
+- **LangChain OpenAI** (`langchain-openai==1.0.2`): Wird automatisch als Fallback-Library genutzt, falls CrewAI keinen eigenen LLM-Wrapper findet. Erwartet `OPENAI_API_KEY` in der Umgebung oder `.env`.
+- **python-dotenv** (`python-dotenv==1.2.1`): Optional. Wird beim Start geladen, um API-Keys oder Modelle aus `.env` zu beziehen.
 - Standardbibliothek (`argparse`, `pathlib`, `dataclasses`, `json`, `re`, `os`, `sys`).
 
-> Installationsempfehlung: `pip install crewai langchain-openai python-dotenv` innerhalb eines virtuellen Environments.
+> Installationsempfehlung: `python -m pip install -r requirements.txt` in einer Python-3.12-Umgebung.
 
 ## Aufbau und Datenfluss
 - `_build_llm()` versucht zuerst, den CrewAI-LLM zu initialisieren; fällt sonst auf `ChatOpenAI` zurück.
@@ -33,7 +34,7 @@ Das Ergebnis ist dadurch reproduzierbarer als ein einmaliger Chat-Export, weil d
 ```
 python veriport.py <quelle> [--target-lang sprache] [--ext endung]
                     [--model name] [--max-iters n]
-                    [--temperature t] [--verbose] [--dry-run]
+                    [--verbose] [--dry-run]
 ```
 
 | Option | Bedeutung |
@@ -43,11 +44,16 @@ python veriport.py <quelle> [--target-lang sprache] [--ext endung]
 | `--ext` | Erzwingt eine konkrete Dateiendung (z. B. `ts`). Wenn leer, wird sie aus der Sprache abgeleitet. |
 | `--model`, `-m` | OpenAI-Modellname für beide Agents (Standard: `gpt-5`). |
 | `--max-iters` | Anzahl Konvertierungs-/Review-Schleifen (Standard: 3). |
-| `--temperature` | Sampling-Temperatur des LLM (Standard: 0.2, für deterministischere Outputs). |
 | `--verbose`, `-v` | Übergibt `verbose=True` an CrewAI und zeigt Agentendialoge. |
 | `--dry-run` | Führt den gesamten Ablauf aus, schreibt aber keine Datei – praktisch für schnelle Checks. |
 
 ## Beispiele
+- **Quickstart mit den Dateien unter `example/`:**
+  ```bash
+  # erzeugt example/hello.py aus example/hello.c (die Logausgabe landet auf STDOUT)
+  python veriport.py example/hello.c --target-lang python --verbose
+  ```
+  Die erstellte `example/conversion.txt` zeigt einen vollständigen CLI-Lauf inklusive Reviewer-Logs. Sie eignet sich als Referenz, wie ein erfolgreicher Durchgang aussehen soll.
 - **JavaScript nach Python, Datei schreiben:**
   ```bash
   OPENAI_API_KEY=sk-... python veriport.py src/handler.js --target-lang python --model gpt-4o
