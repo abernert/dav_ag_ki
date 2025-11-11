@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GenApp Python</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>GenApp Python</h1>
+      <nav>
+        <a href="/">Übersicht</a>
+        <a href="/customers">Kunden</a>
+        <a href="/policies">Policen</a>
+        <a href="/claims">Schäden</a>
+        <a href="/events">Events</a>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <small>Minimal UI für COBOL→Python Port</small>
+    </footer>
+  </body>
+  </html>

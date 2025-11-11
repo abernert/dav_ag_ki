@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Kunde #{{ customer.id }} ({{ customer.customer_number }})</h2>
+  <p><strong>Name:</strong> {{ customer.first_name }} {{ customer.last_name }}</p>
+  <p><strong>Geburtsdatum:</strong> {{ customer.date_of_birth or '-' }}</p>
+  <p><strong>Adresse:</strong> {{ customer.house_name or '' }} {{ customer.house_number or '' }}, {{ customer.postcode or '' }}</p>
+  <p><strong>Kontakt:</strong> {{ customer.phone_mobile or '' }} {{ customer.phone_home or '' }} {{ customer.email_address or '' }}</p>
+  <p>
+    <a class="btn" href="/customers/{{ customer.id }}/edit">Bearbeiten</a>
+    <a class="btn" href="/customers">Zurück</a>
+  </p>
+{% endblock %}
+

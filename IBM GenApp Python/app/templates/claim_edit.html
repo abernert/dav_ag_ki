@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Schaden bearbeiten #{{ claim.id }}</h2>
+  <form method="post" action="/claims/{{ claim.id }}/edit" class="form">
+    <div class="grid">
+      <label>Policy ID <input value="{{ claim.policy_id }}" disabled /></label>
+      <label>Nummer <input name="number" type="number" value="{{ claim.number or '' }}" /></label>
+      <label>Datum <input name="date" placeholder="YYYY-MM-DD" maxlength="10" value="{{ claim.date or '' }}" /></label>
+      <label>Bezahlt <input name="paid" type="number" value="{{ claim.paid or '' }}" /></label>
+      <label>Wert <input name="value" type="number" value="{{ claim.value or '' }}" /></label>
+      <label>Ursache <input name="cause" maxlength="255" value="{{ claim.cause or '' }}" /></label>
+      <label>Bemerkungen <input name="observations" maxlength="255" value="{{ claim.observations or '' }}" /></label>
+    </div>
+    <p>
+      <button type="submit" class="btn">Speichern</button>
+      <a class="btn" href="/claims">Abbrechen</a>
+    </p>
+  </form>
+{% endblock %}

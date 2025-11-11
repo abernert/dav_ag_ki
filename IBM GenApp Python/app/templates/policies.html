@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Policen</h2>
+  {% if errors %}
+    <div style="color:#b30000; margin:0.5rem 0;">
+      {% for message in errors %}
+        <p style="margin:0;">{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <form method="get" action="/policies" class="form" style="margin:.5rem 0 1rem;">
+    <div class="grid">
+      <label>Typ
+        <select name="policy_type">
+          <option value="" {% if not policy_type %}selected{% endif %}>Alle</option>
+          <option value="M" {% if policy_type=='M' %}selected{% endif %}>Motor</option>
+          <option value="H" {% if policy_type=='H' %}selected{% endif %}>House</option>
+          <option value="E" {% if policy_type=='E' %}selected{% endif %}>Endowment</option>
+          <option value="C" {% if policy_type=='C' %}selected{% endif %}>Commercial</option>
+        </select>
+      </label>
+      <label>Kunde <input name="customer_id" value="{{ customer_id }}" /></label>
+      <label>Nur aktiv <input type="checkbox" name="active_only" {% if active_only %}checked{% endif %} /></label>
+      <label>Postcode <input name="postcode" value="{{ postcode }}" /></label>
+      <label>Seite <input name="page" type="number" min="1" value="{{ page }}" /></label>
+      <label>Größe <input name="size" type="number" min="1" value="{{ size }}" /></label>
+    </div>
+    <p>
+      <button class="btn" type="submit">Filtern</button>
+      <a class="btn" href="/policies/new">Neue Police</a>
+    </p>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Typ</th>
+        <th>Nummer</th>
+        <th>Kunde</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in policies %}
+        <tr>
+          <td><a href="/policies/{{ p.id }}">{{ p.id }}</a></td>
+          <td>{{ p.policy_type }}</td>
+          <td>{{ p.policy_number or '' }}</td>
+          <td>{{ p.customer_id }}</td>
+          <td>
+            <form method="post" action="/policies/{{ p.id }}/delete" style="display:inline" onsubmit="return confirm('Löschen?');">
+              <button class="btn" type="submit">Löschen</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

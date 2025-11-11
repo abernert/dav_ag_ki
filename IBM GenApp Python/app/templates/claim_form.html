@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Neuer Schaden</h2>
+  <form method="post" action="/claims" class="form">
+    <div class="grid">
+      <label>Policy ID <input name="policy_id" type="number" required /></label>
+      <label>Nummer <input name="number" type="number" /></label>
+      <label>Datum <input name="date" placeholder="YYYY-MM-DD" maxlength="10" /></label>
+      <label>Bezahlt <input name="paid" type="number" /></label>
+      <label>Wert <input name="value" type="number" /></label>
+      <label>Ursache <input name="cause" maxlength="255" /></label>
+      <label>Bemerkungen <input name="observations" maxlength="255" /></label>
+    </div>
+    <p>
+      <button type="submit" class="btn">Speichern</button>
+      <a class="btn" href="/claims">Abbrechen</a>
+    </p>
+  </form>
+{% endblock %}
+

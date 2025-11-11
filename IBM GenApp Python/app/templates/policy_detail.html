@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Policy #{{ policy.id }} ({{ policy.policy_type }})</h2>
+  <p><strong>Kunde:</strong> {{ policy.customer_id }}</p>
+  <p><strong>Policy-Nr.:</strong> {{ policy.policy_number or '-' }}</p>
+  <p><strong>Gültig:</strong> {{ policy.issue_date or '-' }} bis {{ policy.expiry_date or '-' }}</p>
+  <h3>Details</h3>
+  {% if detail_dict %}
+    <pre>{{ detail_dict | tojson(indent=2) }}</pre>
+  {% else %}
+    <p>-</p>
+  {% endif %}
+  <p>
+    <a class="btn" href="/policies">Zurück</a>
+  </p>
+{% endblock %}

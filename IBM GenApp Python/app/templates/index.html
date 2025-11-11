@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="cards">
+    <div class="card">
+      <h2>Kunden</h2>
+      <p>{{ counts.customers }} Einträge</p>
+      <p>
+        <a class="btn" href="/customers">Ansehen</a>
+        <a class="btn" href="/customers/new">Neu</a>
+      </p>
+    </div>
+    <div class="card">
+      <h2>Policen</h2>
+      <p>{{ counts.policies }} Einträge</p>
+      <p>
+        <a class="btn" href="/policies">Ansehen</a>
+        <a class="btn" href="/policies/new">Neu</a>
+      </p>
+    </div>
+    <div class="card">
+      <h2>Schäden</h2>
+      <p>{{ counts.claims }} Einträge</p>
+      <p>
+        <a class="btn" href="/claims">Ansehen</a>
+        <a class="btn" href="/claims/new">Neu</a>
+      </p>
+    </div>
+    <div class="card">
+      <h2>Events</h2>
+      <p>{{ counts.events }} Einträge</p>
+      <p>
+        <a class="btn" href="/events">Ansehen</a>
+      </p>
+    </div>
+  </section>
+{% endblock %}

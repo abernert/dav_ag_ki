@@ -1,0 +1,53 @@
+# macOS and OS cruft
+.DS_Store
+Thumbs.db
+
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+.ruff_cache/
+.pyre/
+.pytype/
+.ipynb_checkpoints/
+
+# Coverage and test reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+
+# Dependency/build artifacts
+*.egg-info/
+*.eggs/
+pip-wheel-metadata/
+build/
+dist/
+site/
+
+# Virtual environments and environment files
+.env
+.env.*
+.envrc
+env/
+ENV/
+.venv/
+venv/
+
+# Tooling & IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and runtime outputs
+*.log
+logs/
+

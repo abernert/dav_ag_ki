@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Schäden</h2>
+  <form method="get" action="/claims" class="form" style="margin:.5rem 0 1rem;">
+    <div class="grid">
+      <label>Policy ID <input name="policy_id" value="{{ policy_id or '' }}" /></label>
+      <label>Seite <input name="page" type="number" min="1" value="{{ page or 1 }}" /></label>
+      <label>Größe <input name="size" type="number" min="1" value="{{ size or 20 }}" /></label>
+    </div>
+    <p>
+      <button class="btn" type="submit">Filtern</button>
+      <a class="btn" href="/claims/new">Neuen Schaden anlegen</a>
+    </p>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Policy</th>
+        <th>Nummer</th>
+        <th>Datum</th>
+        <th>Wert</th>
+        <th>Aktionen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in claims %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.policy_id }}</td>
+          <td>{{ c.number or '' }}</td>
+          <td>{{ c.date or '' }}</td>
+          <td>{{ c.value or '' }}</td>
+          <td>
+            <a class="btn" href="/claims/{{ c.id }}/edit">Bearbeiten</a>
+            <form method="post" action="/claims/{{ c.id }}/delete" style="display:inline" onsubmit="return confirm('Löschen?');">
+              <button class="btn" type="submit">Löschen</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

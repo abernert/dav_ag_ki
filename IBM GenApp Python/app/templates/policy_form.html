@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Neue Police</h2>
+  <form method="post" action="/policies" class="form" id="policy-form">
+    <div class="grid">
+      <label>Typ
+        <select name="policy_type" id="policy_type" required>
+          <option value="M">Motor</option>
+          <option value="H">House</option>
+          <option value="E">Endowment</option>
+          <option value="C">Commercial</option>
+        </select>
+      </label>
+      <label>Commission <input name="commission" type="number" /></label>
+      <label>Policy-Nr. <input name="policy_number" type="number" /></label>
+      <label>Kunde
+        <select name="customer_id" required>
+          {% for c in customers %}
+            <option value="{{ c.id }}">{{ c.id }} - {{ c.first_name }} {{ c.last_name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <!-- Motor fields -->
+      <div data-section="M">
+        <label>Make <input name="make" maxlength="15" /></label>
+        <label>Model <input name="model" maxlength="15" /></label>
+        <label>Value <input name="value" type="number" /></label>
+        <label>Reg <input name="reg_number" maxlength="7" /></label>
+        <label>Color <input name="colour" maxlength="8" /></label>
+        <label>CC <input name="cc" type="number" /></label>
+        <label>Year <input name="manufactured" maxlength="10" /></label>
+        <label>Premium <input name="premium" type="number" /></label>
+        <label>Accidents <input name="accidents" type="number" /></label>
+      </div>
+
+      <!-- House fields -->
+      <div data-section="H" hidden>
+        <label>Property Type <input name="property_type" maxlength="15" /></label>
+        <label>Bedrooms <input name="bedrooms" type="number" /></label>
+        <label>Value <input name="value" type="number" /></label>
+        <label>House Name <input name="house_name" maxlength="20" /></label>
+        <label>House No. <input name="house_number" maxlength="4" /></label>
+        <label>Postcode <input name="postcode" maxlength="8" /></label>
+      </div>
+
+      <!-- Endowment fields -->
+      <div data-section="E" hidden>
+        <label>With Profits <input name="with_profits" maxlength="1" /></label>
+        <label>Equities <input name="equities" maxlength="1" /></label>
+        <label>Managed Fund <input name="managed_fund" maxlength="1" /></label>
+        <label>Fund Name <input name="fund_name" maxlength="10" /></label>
+        <label>Term <input name="term" type="number" /></label>
+        <label>Sum Assured <input name="sum_assured" type="number" /></label>
+        <label>Life Assured <input name="life_assured" maxlength="31" /></label>
+      </div>
+
+      <!-- Commercial fields -->
+      <div data-section="C" hidden>
+        <label>Address <input name="address" maxlength="255" /></label>
+        <label>Postcode <input name="postcode" maxlength="8" /></label>
+        <label>Latitude <input name="latitude" maxlength="11" /></label>
+        <label>Longitude <input name="longitude" maxlength="11" /></label>
+        <label>Customer <input name="customer" maxlength="255" /></label>
+        <label>Property Type <input name="prop_type" maxlength="255" /></label>
+        <label>Fire Peril <input name="fire_peril" type="number" /></label>
+        <label>Fire Premium <input name="fire_premium" type="number" /></label>
+        <label>Crime Peril <input name="crime_peril" type="number" /></label>
+        <label>Crime Premium <input name="crime_premium" type="number" /></label>
+        <label>Flood Peril <input name="flood_peril" type="number" /></label>
+        <label>Flood Premium <input name="flood_premium" type="number" /></label>
+        <label>Weather Peril <input name="weather_peril" type="number" /></label>
+        <label>Weather Premium <input name="weather_premium" type="number" /></label>
+        <label>Status <input name="status" type="number" /></label>
+        <label>Reject Reason <input name="reject_reason" maxlength="255" /></label>
+      </div>
+    </div>
+    <p>
+      <button type="submit" class="btn">Speichern</button>
+      <a class="btn" href="/policies">Abbrechen</a>
+    </p>
+  </form>
+
+  <script>
+    const typeSel = document.getElementById('policy_type');
+    const sections = document.querySelectorAll('[data-section]');
+    function updateSections() {
+      const t = typeSel.value;
+      sections.forEach(s => s.hidden = s.getAttribute('data-section') !== t);
+    }
+    typeSel.addEventListener('change', updateSections);
+    updateSections();
+  </script>
+{% endblock %}

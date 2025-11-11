@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Policy bearbeiten #{{ policy.id }} ({{ policy.policy_type }})</h2>
+  <form method="post" action="/policies/{{ policy.id }}/edit" class="form">
+    <div class="grid">
+      <label>Policy-Nr. <input name="policy_number" type="number" value="{{ policy.policy_number or '' }}" /></label>
+      <label>Issue <input name="issue_date" maxlength="10" value="{{ policy.issue_date or '' }}" /></label>
+      <label>Expiry <input name="expiry_date" maxlength="10" value="{{ policy.expiry_date or '' }}" /></label>
+      <label>Broker-ID <input name="broker_id" type="number" value="{{ policy.broker_id or '' }}" /></label>
+      <label>Brokers Ref <input name="brokers_ref" maxlength="10" value="{{ policy.brokers_ref or '' }}" /></label>
+      <label>Payment <input name="payment" type="number" value="{{ policy.payment or '' }}" /></label>
+      <label>Commission <input name="commission" type="number" value="{{ policy.commission or '' }}" /></label>
+
+      {% if policy.policy_type == 'M' %}
+        <label>Make <input name="make" value="{{ detail.make or '' }}" /></label>
+        <label>Model <input name="model" value="{{ detail.model or '' }}" /></label>
+        <label>Value <input name="value" type="number" value="{{ detail.value or '' }}" /></label>
+        <label>Reg <input name="reg_number" value="{{ detail.reg_number or '' }}" /></label>
+        <label>Color <input name="colour" value="{{ detail.colour or '' }}" /></label>
+        <label>CC <input name="cc" type="number" value="{{ detail.cc or '' }}" /></label>
+        <label>Year <input name="manufactured" value="{{ detail.manufactured or '' }}" /></label>
+        <label>Premium <input name="premium" type="number" value="{{ detail.premium or '' }}" /></label>
+        <label>Accidents <input name="accidents" type="number" value="{{ detail.accidents or '' }}" /></label>
+      {% elif policy.policy_type == 'H' %}
+        <label>Property Type <input name="property_type" value="{{ detail.property_type or '' }}" /></label>
+        <label>Bedrooms <input name="bedrooms" type="number" value="{{ detail.bedrooms or '' }}" /></label>
+        <label>Value <input name="value" type="number" value="{{ detail.value or '' }}" /></label>
+        <label>House Name <input name="house_name" value="{{ detail.house_name or '' }}" /></label>
+        <label>House No. <input name="house_number" value="{{ detail.house_number or '' }}" /></label>
+        <label>Postcode <input name="postcode" value="{{ detail.postcode or '' }}" /></label>
+      {% elif policy.policy_type == 'E' %}
+        <label>With Profits <input name="with_profits" value="{{ detail.with_profits or '' }}" /></label>
+        <label>Equities <input name="equities" value="{{ detail.equities or '' }}" /></label>
+        <label>Managed Fund <input name="managed_fund" value="{{ detail.managed_fund or '' }}" /></label>
+        <label>Fund Name <input name="fund_name" value="{{ detail.fund_name or '' }}" /></label>
+        <label>Term <input name="term" type="number" value="{{ detail.term or '' }}" /></label>
+        <label>Sum Assured <input name="sum_assured" type="number" value="{{ detail.sum_assured or '' }}" /></label>
+        <label>Life Assured <input name="life_assured" value="{{ detail.life_assured or '' }}" /></label>
+      {% elif policy.policy_type == 'C' %}
+        <label>Address <input name="address" value="{{ detail.address or '' }}" /></label>
+        <label>Postcode <input name="postcode" value="{{ detail.postcode or '' }}" /></label>
+        <label>Latitude <input name="latitude" value="{{ detail.latitude or '' }}" /></label>
+        <label>Longitude <input name="longitude" value="{{ detail.longitude or '' }}" /></label>
+        <label>Customer <input name="customer" value="{{ detail.customer or '' }}" /></label>
+        <label>Property Type <input name="prop_type" value="{{ detail.prop_type or '' }}" /></label>
+        <label>Fire Peril <input name="fire_peril" type="number" value="{{ detail.fire_peril or '' }}" /></label>
+        <label>Fire Premium <input name="fire_premium" type="number" value="{{ detail.fire_premium or '' }}" /></label>
+        <label>Crime Peril <input name="crime_peril" type="number" value="{{ detail.crime_peril or '' }}" /></label>
+        <label>Crime Premium <input name="crime_premium" type="number" value="{{ detail.crime_premium or '' }}" /></label>
+        <label>Flood Peril <input name="flood_peril" type="number" value="{{ detail.flood_peril or '' }}" /></label>
+        <label>Flood Premium <input name="flood_premium" type="number" value="{{ detail.flood_premium or '' }}" /></label>
+        <label>Weather Peril <input name="weather_peril" type="number" value="{{ detail.weather_peril or '' }}" /></label>
+        <label>Weather Premium <input name="weather_premium" type="number" value="{{ detail.weather_premium or '' }}" /></label>
+        <label>Status <input name="status" type="number" value="{{ detail.status or '' }}" /></label>
+        <label>Reject Reason <input name="reject_reason" value="{{ detail.reject_reason or '' }}" /></label>
+      {% endif %}
+    </div>
+    <p>
+      <button type="submit" class="btn">Speichern</button>
+      <a class="btn" href="/policies/{{ policy.id }}">Abbrechen</a>
+    </p>
+  </form>
+{% endblock %}

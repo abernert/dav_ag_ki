@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Events</h2>
+
+  <form method="get" action="/events" class="form">
+    <label>Quelle <input name="source" value="{{ source }}" /></label>
+    <label>Level <input name="level" value="{{ level }}" /></label>
+    <label>Seite <input name="page" type="number" min="1" value="{{ page }}" /></label>
+    <label>Größe <input name="size" type="number" min="1" value="{{ size }}" /></label>
+    <button type="submit" class="btn">Filtern</button>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Zeit</th>
+        <th>Quelle</th>
+        <th>Level</th>
+        <th>Nachricht</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in events %}
+        <tr>
+          <td>{{ e.created_at }}</td>
+          <td>{{ e.source }}</td>
+          <td>{{ e.level }}</td>
+          <td><pre style="margin:0">{{ e.message }}</pre></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+

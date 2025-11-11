@@ -1,0 +1,120 @@
+{
+  "customers": [
+    {
+      "key": "CUST_ANDREW",
+      "first_name": "ANDREW",
+      "last_name": "PETERS",
+      "date_of_birth": "1974-05-11",
+      "house_name": "OAK HOUSE",
+      "house_number": "25",
+      "postcode": "W1A4WW",
+      "phone_mobile": "0207 111111",
+      "phone_home": "0207 222222",
+      "email_address": "ANDREW.PETERS@example.com"
+    },
+    {
+      "key": "CUST_GRAHAM",
+      "first_name": "GRAHAM",
+      "last_name": "CUTHBERT",
+      "date_of_birth": "1967-01-03",
+      "house_name": "",
+      "house_number": "55",
+      "postcode": "TR68BK",
+      "phone_mobile": "0208 344344",
+      "phone_home": "01101 499787",
+      "email_address": "g.cuthbert@example.com"
+    },
+    {
+      "key": "CUST_SUSAN",
+      "first_name": "SUSAN",
+      "last_name": "STRANKS",
+      "date_of_birth": "1938-12-02",
+      "house_name": "",
+      "house_number": "68",
+      "postcode": "W1A4WW",
+      "phone_mobile": "0207 845845",
+      "phone_home": "",
+      "email_address": "s.stranks@example.com"
+    }
+  ],
+  "policies": [
+    {
+      "key": "POL_MOTOR",
+      "customer_key": "CUST_ANDREW",
+      "type": "M",
+      "policy_number": 2000001,
+      "issue_date": "2022-01-01",
+      "expiry_date": "2023-01-01",
+      "broker_id": 100,
+      "payment": 1200,
+      "motor_detail": {
+        "make": "FORD",
+        "model": "ESCORT",
+        "value": 9500,
+        "reg_number": "A567WWR",
+        "colour": "BLUE",
+        "cc": 1400,
+        "manufactured": "2020-01-01",
+        "premium": 750,
+        "accidents": 0
+      }
+    },
+    {
+      "key": "POL_HOUSE",
+      "customer_key": "CUST_GRAHAM",
+      "type": "H",
+      "policy_number": 2000002,
+      "issue_date": "2022-02-01",
+      "expiry_date": "2023-02-01",
+      "broker_id": 200,
+      "payment": 980,
+      "house_detail": {
+        "property_type": "HOUSE",
+        "bedrooms": 3,
+        "value": 150000,
+        "house_name": "SEA VIEW",
+        "house_number": "12",
+        "postcode": "TR68BK"
+      }
+    },
+    {
+      "key": "POL_COMM",
+      "customer_key": "CUST_SUSAN",
+      "type": "C",
+      "policy_number": 2000003,
+      "issue_date": "2022-03-15",
+      "expiry_date": "2023-03-15",
+      "broker_id": 300,
+      "payment": 2150,
+      "commercial_detail": {
+        "address": "5 MAIN ST",
+        "postcode": "SO212JN",
+        "latitude": "50.8497N",
+        "longitude": "0.1234W",
+        "customer": "SUSAN STRANKS",
+        "prop_type": "SHOP",
+        "fire_peril": 40,
+        "fire_premium": 350,
+        "crime_peril": 30,
+        "crime_premium": 275,
+        "flood_peril": 10,
+        "flood_premium": 200,
+        "weather_peril": 5,
+        "weather_premium": 150,
+        "status": 1,
+        "reject_reason": ""
+      }
+    }
+  ],
+  "claims": [
+    {
+      "policy_key": "POL_MOTOR",
+      "number": 101,
+      "date": "2022-06-12",
+      "paid": 500,
+      "value": 1200,
+      "cause": "FIRE",
+      "observations": "Engine compartment fire, minor damage"
+    }
+  ]
+}

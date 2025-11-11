@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Kunden</h2>
+  <form method="get" action="/customers" class="form" style="margin:.5rem 0 1rem;">
+    <div class="grid">
+      <label>Name enthält <input name="name" value="{{ name }}" /></label>
+      <label>PLZ enthält <input name="postcode" value="{{ postcode }}" /></label>
+      <label>Seite <input name="page" type="number" min="1" value="{{ page }}" /></label>
+      <label>Größe <input name="size" type="number" min="1" value="{{ size }}" /></label>
+    </div>
+    <p>
+      <button class="btn" type="submit">Filtern</button>
+      <a class="btn" href="/customers/new">Neuer Kunde</a>
+    </p>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Geburtsdatum</th>
+        <th>PLZ</th>
+        <th>Aktionen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in customers %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td><a href="/customers/{{ c.id }}">{{ c.first_name }} {{ c.last_name }}</a></td>
+          <td>{{ c.date_of_birth or '' }}</td>
+          <td>{{ c.postcode or '' }}</td>
+          <td>
+            <form method="post" action="/customers/{{ c.id }}/delete" style="display:inline" onsubmit="return confirm('Löschen?');">
+              <button class="btn" type="submit">Löschen</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

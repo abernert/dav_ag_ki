@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Kunde bearbeiten #{{ customer.id }}</h2>
+  <form method="post" action="/customers/{{ customer.id }}/edit" class="form">
+    <div class="grid">
+      <label>Vorname <input name="first_name" maxlength="10" value="{{ customer.first_name }}" /></label>
+      <label>Nachname <input name="last_name" maxlength="20" value="{{ customer.last_name }}" /></label>
+      <label>Geburtsdatum <input name="date_of_birth" maxlength="10" value="{{ customer.date_of_birth or '' }}" /></label>
+      <label>Hausname <input name="house_name" maxlength="20" value="{{ customer.house_name or '' }}" /></label>
+      <label>Hausnr. <input name="house_number" maxlength="4" value="{{ customer.house_number or '' }}" /></label>
+      <label>PLZ <input name="postcode" maxlength="8" value="{{ customer.postcode or '' }}" /></label>
+      <label>Mobil <input name="phone_mobile" maxlength="20" value="{{ customer.phone_mobile or '' }}" /></label>
+      <label>Festnetz <input name="phone_home" maxlength="20" value="{{ customer.phone_home or '' }}" /></label>
+      <label>Email <input type="email" name="email_address" value="{{ customer.email_address or '' }}" /></label>
+    </div>
+    <p>
+      <button type="submit" class="btn">Speichern</button>
+      <a class="btn" href="/customers">Abbrechen</a>
+    </p>
+  </form>
+{% endblock %}
+
