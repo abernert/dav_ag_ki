@@ -8,7 +8,6 @@
 #define V volatile
 #define S static
 #define U unsigned
-#define R return
 #define W while
 #define I if
 #define E else
