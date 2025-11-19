@@ -7,6 +7,7 @@ Dieses Repository bündelt drei voneinander unabhängige Beispiele und Tools, di
 | `IBM GenApp Python/` | Python/ FastAPI-Port einer historischen IBM GenApp COBOL-Anwendung inklusive UI, REST-APIs, SQLite-DB, Seed-Skripten und Dokumentation. | FastAPI, SQLAlchemy, Jinja2, SQLite |
 | `Quicksort/` | Bewusst komplizierte Quicksort-Implementierung in C, gedacht als einfacher Benchmark für Code-Verständnis und Dokumentation (Beschreibung siehe `kowabunga.md`). | ANSI C |
 | `Veriport/` | Einzeldatei-CLI, die mit CrewAI Agents Code in neue Sprachen übersetzt und automatisch reviewt; enthält ein Beispiel in `example/`. | Python 3.12, CrewAI, LangChain |
+| `Sonstige Dokumente/` | Vorträge und Erfahrungsbericht. | NA (pdf-Textdateien) |
 
 Weiterführende Informationen, Installationsschritte und Architekturhinweise findest du jeweils in den README-Dateien der Unterordner.
 
